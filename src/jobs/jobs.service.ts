@@ -1,14 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateJobInput } from './dto/create-job.input';
 import { UpdateJobInput } from './dto/update-job.input';
 import { SchedulerService } from '../scheduler/scheduler.service';
 import { QueueService } from '../queue/queue.service';
 
-function parseParams(raw?: string): Record<string, unknown> | undefined {
+function parseParams(raw?: string): Prisma.InputJsonValue | undefined {
   if (!raw) return undefined;
   try {
-    return JSON.parse(raw) as Record<string, unknown>;
+    return JSON.parse(raw) as Prisma.InputJsonValue;
   } catch {
     throw new Error(`Invalid JSON in params: ${raw}`);
   }
@@ -20,7 +21,7 @@ export class JobsService {
     private prisma: PrismaService,
     private schedulerService: SchedulerService,
     private queueService: QueueService,
-  ) {}
+  ) { }
 
   async findAll() {
     return this.prisma.job.findMany({ orderBy: { createdAt: 'asc' } });

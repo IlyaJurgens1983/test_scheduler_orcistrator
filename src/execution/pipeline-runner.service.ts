@@ -1,4 +1,5 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { StepExecutor } from './step-executor.interface';
 import { WebhookExecutor } from './executors/webhook.executor';
@@ -66,7 +67,7 @@ export class PipelineRunnerService {
             stepId,
             type,
             status: 'running',
-            input: config,
+            input: config as Prisma.InputJsonValue,
             startedAt: new Date(),
           },
         });
@@ -76,7 +77,11 @@ export class PipelineRunnerService {
           context[stepId] = output;
           await this.prisma.stepRun.update({
             where: { id: stepRun.id },
-            data: { status: 'success', output, finishedAt: new Date() },
+            data: {
+              status: 'success',
+              output: output as Prisma.InputJsonValue,
+              finishedAt: new Date(),
+            },
           });
         } catch (err) {
           const message = err instanceof Error ? err.message : String(err);
