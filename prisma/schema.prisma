@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id          Int      @id @default(autoincrement())
+  key         String   @unique
+  name        String
+  description String?
+  cron        String
+  timezone    String   @default("UTC")
+  enabled     Boolean  @default(true)
+  params      Json? // pipeline steps config
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  runs        JobRun[]
+}
+
+model JobRun {
+  id         Int       @id @default(autoincrement())
+  jobId      Int
+  job        Job       @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  status     String    @default("pending") // pending, running, success, failed, timeout, skipped
+  trigger    String    @default("manual") // cron, manual
+  startedAt  DateTime?
+  finishedAt DateTime?
+  error      String?
+  stepRuns   StepRun[]
+  createdAt  DateTime  @default(now())
+}
+
+model StepRun {
+  id         Int      @id @default(autoincrement())
+  jobRunId   Int
+  jobRun     JobRun   @relation(fields: [jobRunId], references: [id], onDelete: Cascade)
+  stepId     String
+  type       String
+  status     String   @default("pending") // pending, running, success, failed, skipped
+  input      Json?
+  output     Json?
+  error      String?
+  startedAt  DateTime?
+  finishedAt DateTime?
+}
+
+model Artifact {
+  id         Int      @id @default(autoincrement())
+  jobRunId   Int
+  jobRun     JobRun   @relation(fields: [jobRunId], references: [id], onDelete: Cascade)
+  filename   String
+  mimeType   String
+  storage    String   @default("local")
+  path       String
+  size       Int?
+  createdAt  DateTime @default(now())
+}
