@@ -1,7 +1,8 @@
 import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client';
 
-// In production the app is served behind the same origin as the API,
-// so a relative URL works both locally (via Vite proxy) and in production.
+// In production (docker-compose) the app is served by nginx behind the same
+// origin as the API, so a relative URL works. When the frontend is published
+// separately (e.g. GitVerse Pages) set VITE_GRAPHQL_URL to the public API URL.
 export const GRAPHQL_URL =
   import.meta.env.VITE_GRAPHQL_URL || '/graphql';
 
