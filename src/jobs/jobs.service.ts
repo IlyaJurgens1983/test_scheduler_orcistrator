@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import type { InputJsonValue } from '@prisma/client/runtime/library';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateJobInput } from './dto/create-job.input';
 import { UpdateJobInput } from './dto/update-job.input';
 import { SchedulerService } from '../scheduler/scheduler.service';
 import { QueueService } from '../queue/queue.service';
 
-function parseParams(raw?: string): Prisma.InputJsonValue | undefined {
+function parseParams(raw?: string): InputJsonValue | undefined {
   if (!raw) return undefined;
   try {
-    return JSON.parse(raw) as Prisma.InputJsonValue;
+    return JSON.parse(raw) as InputJsonValue;
   } catch {
     throw new Error(`Invalid JSON in params: ${raw}`);
   }

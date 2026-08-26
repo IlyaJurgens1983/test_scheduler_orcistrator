@@ -3,25 +3,25 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 export class Job {
   @Field(() => Int)
-  id: number;
+  id!: number;
 
   @Field()
-  key: string;
+  key!: string;
 
   @Field()
-  name: string;
+  name!: string;
 
   @Field({ nullable: true })
   description?: string;
 
   @Field()
-  cron: string;
+  cron!: string;
 
   @Field()
-  timezone: string;
+  timezone!: string;
 
   @Field()
-  enabled: boolean;
+  enabled!: boolean;
 
   @Field({
     nullable: true,
@@ -30,8 +30,8 @@ export class Job {
   params?: string;
 
   @Field(() => Date)
-  createdAt: Date;
+  createdAt!: Date;
 
   @Field(() => Date)
-  updatedAt: Date;
+  updatedAt!: Date;
 }

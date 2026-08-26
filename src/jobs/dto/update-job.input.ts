@@ -4,7 +4,7 @@ import { IsBoolean, IsOptional, IsString } from 'class-validator';
 @InputType()
 export class UpdateJobInput {
   @Field(() => Int)
-  id: number;
+  id!: number;
 
   @Field({ nullable: true })
   @IsOptional()

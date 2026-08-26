@@ -1,5 +1,5 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import type { InputJsonValue } from '@prisma/client/runtime/library';
 import { PrismaService } from '../prisma/prisma.service';
 import { StepExecutor } from './step-executor.interface';
 import { WebhookExecutor } from './executors/webhook.executor';
@@ -67,7 +67,7 @@ export class PipelineRunnerService {
             stepId,
             type,
             status: 'running',
-            input: config as Prisma.InputJsonValue,
+            input: config as InputJsonValue,
             startedAt: new Date(),
           },
         });
@@ -79,7 +79,7 @@ export class PipelineRunnerService {
             where: { id: stepRun.id },
             data: {
               status: 'success',
-              output: output as Prisma.InputJsonValue,
+              output: output as InputJsonValue,
               finishedAt: new Date(),
             },
           });

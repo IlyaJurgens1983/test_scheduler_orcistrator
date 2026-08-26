@@ -3,19 +3,19 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 export class StepRun {
   @Field(() => Int)
-  id: number;
+  id!: number;
 
   @Field(() => Int)
-  jobRunId: number;
+  jobRunId!: number;
 
   @Field()
-  stepId: string;
+  stepId!: string;
 
   @Field()
-  type: string;
+  type!: string;
 
   @Field()
-  status: string;
+  status!: string;
 
   @Field({ nullable: true })
   input?: string;

@@ -5,11 +5,11 @@ import { IsBoolean, IsOptional, IsString } from 'class-validator';
 export class CreateJobInput {
   @Field()
   @IsString()
-  key: string;
+  key!: string;
 
   @Field()
   @IsString()
-  name: string;
+  name!: string;
 
   @Field({ nullable: true })
   @IsOptional()
@@ -18,7 +18,7 @@ export class CreateJobInput {
 
   @Field()
   @IsString()
-  cron: string;
+  cron!: string;
 
   @Field({ nullable: true, defaultValue: 'UTC' })
   @IsOptional()

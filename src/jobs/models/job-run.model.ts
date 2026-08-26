@@ -3,16 +3,16 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 @ObjectType()
 export class JobRun {
   @Field(() => Int)
-  id: number;
+  id!: number;
 
   @Field(() => Int)
-  jobId: number;
+  jobId!: number;
 
   @Field()
-  status: string;
+  status!: string;
 
   @Field()
-  trigger: string;
+  trigger!: string;
 
   @Field(() => Date, { nullable: true })
   startedAt?: Date;
@@ -24,5 +24,5 @@ export class JobRun {
   error?: string;
 
   @Field(() => Date)
-  createdAt: Date;
+  createdAt!: Date;
 }
