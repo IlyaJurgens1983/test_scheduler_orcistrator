@@ -36,19 +36,17 @@ const emptyStep = (): Step => ({
   config: {},
 });
 
-function parseParams(params?: string | null): Step[] {
+function parseParams(params?: Record<string, unknown> | null): Step[] {
   if (!params) return [];
-  try {
-    const parsed = JSON.parse(params);
-    const steps = parsed?.steps || [];
-    return steps.map((s: Record<string, unknown>) => ({
-      id: String(s.id || 'step'),
-      type: String(s.type || ''),
-      config: (s.config as Record<string, unknown> || {}) as Record<string, string>,
-    }));
-  } catch {
-    return [];
-  }
+  const steps = Array.isArray(params.steps) ? params.steps : [];
+  return steps.map((s) => {
+    const step = (s ?? {}) as Record<string, unknown>;
+    return {
+      id: String(step.id || 'step'),
+      type: String(step.type || ''),
+      config: (step.config as Record<string, unknown> || {}) as Record<string, string>,
+    };
+  });
 }
 
 export default function JobForm({ jobId, onDone, onCancel }: Props) {
@@ -98,7 +96,7 @@ export default function JobForm({ jobId, onDone, onCancel }: Props) {
   const removeStep = (index: number) =>
     setSteps((prev) => prev.filter((_, i) => i !== index));
 
-  const buildParamsJson = () => {
+  const buildParams = (): Record<string, unknown> => {
     const cleanSteps = steps
       .filter((s) => s.type)
       .map((s) => ({
@@ -106,13 +104,13 @@ export default function JobForm({ jobId, onDone, onCancel }: Props) {
         type: s.type,
         config: s.config,
       }));
-    return JSON.stringify({ steps: cleanSteps });
+    return { steps: cleanSteps };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    const params = buildParamsJson();
+    const params = buildParams();
 
     try {
       if (isEdit && jobId !== null) {

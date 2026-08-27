@@ -47,6 +47,36 @@ export const GET_JOB_RUNS = gql`
   }
 `;
 
+export const GET_ALL_RUNS = gql`
+  query GetAllRuns {
+    allRuns {
+      id
+      status
+      trigger
+      startedAt
+      finishedAt
+      error
+      createdAt
+      job {
+        id
+        key
+        name
+      }
+      stepRuns {
+        id
+        stepId
+        type
+        status
+        input
+        output
+        error
+        startedAt
+        finishedAt
+      }
+    }
+  }
+`;
+
 export const CREATE_JOB = gql`
   mutation CreateJob($input: CreateJobInput!) {
     createJob(input: $input) {

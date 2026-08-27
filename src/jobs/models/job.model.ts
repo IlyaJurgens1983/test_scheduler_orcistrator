@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import GraphQLJSON from 'graphql-type-json';
 
 @ObjectType()
 export class Job {
@@ -23,11 +24,11 @@ export class Job {
   @Field()
   enabled!: boolean;
 
-  @Field({
+  @Field(() => GraphQLJSON, {
     nullable: true,
-    description: 'Pipeline steps config serialized as JSON string',
+    description: 'Pipeline steps config as JSON object, e.g. {"steps":[...]}',
   })
-  params?: string;
+  params?: Record<string, unknown>;
 
   @Field(() => Date)
   createdAt!: Date;

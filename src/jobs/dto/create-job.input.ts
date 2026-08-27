@@ -1,5 +1,6 @@
 import { Field, InputType } from '@nestjs/graphql';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import GraphQLJSON from 'graphql-type-json';
 
 @InputType()
 export class CreateJobInput {
@@ -30,11 +31,10 @@ export class CreateJobInput {
   @IsBoolean()
   enabled?: boolean;
 
-  @Field({
+  @Field(() => GraphQLJSON, {
     nullable: true,
-    description: 'Pipeline steps config as JSON string, e.g. {"steps":[...]}',
+    description: 'Pipeline steps config as JSON object, e.g. {"steps":[...]}',
   })
   @IsOptional()
-  @IsString()
-  params?: string;
+  params?: Record<string, unknown>;
 }

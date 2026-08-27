@@ -72,7 +72,7 @@ describe('JobsService', () => {
   });
 
   describe('create', () => {
-    it('creates a job, parses params JSON and reschedules it', async () => {
+    it('creates a job, stores params object and reschedules it', async () => {
       const input = {
         key: 'test-job',
         name: 'Test Job',
@@ -80,7 +80,7 @@ describe('JobsService', () => {
         cron: '0 * * * *',
         timezone: 'Europe/Moscow',
         enabled: true,
-        params: '{"steps":[{"type":"email.send"}]}',
+        params: { steps: [{ type: 'email.send' }] },
       };
       const created = { id: 1, ...input, timezone: 'Europe/Moscow' };
       prismaMock.job.create.mockResolvedValue(created);
@@ -121,17 +121,28 @@ describe('JobsService', () => {
       });
     });
 
-    it('throws when params is invalid JSON', async () => {
+    it('passes params object through to Prisma', async () => {
       const input = {
         key: 'k',
         name: 'N',
         cron: '* * * * *',
-        params: '{invalid json',
+        params: { steps: [{ type: 'webhook.call' }] },
       };
+      prismaMock.job.create.mockResolvedValue({ id: 2 });
 
-      await expect(service.create(input as never)).rejects.toThrow(
-        'Invalid JSON in params',
-      );
+      await service.create(input as never);
+
+      expect(prismaMock.job.create).toHaveBeenCalledWith({
+        data: {
+          key: 'k',
+          name: 'N',
+          description: undefined,
+          cron: '* * * * *',
+          timezone: 'UTC',
+          enabled: true,
+          params: { steps: [{ type: 'webhook.call' }] },
+        },
+      });
     });
   });
 

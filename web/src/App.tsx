@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import JobList from './components/JobList';
 import JobForm from './components/JobForm';
+import History from './components/History';
 
-type View = 'list' | 'create';
+type View = 'list' | 'create' | 'history';
 
 export default function App() {
   const [view, setView] = useState<View>('list');
@@ -31,10 +32,21 @@ export default function App() {
           >
             New Job
           </button>
+          <button
+            className={view === 'history' ? 'active' : ''}
+            onClick={() => {
+              setView('history');
+              setEditingJobId(null);
+            }}
+          >
+            History
+          </button>
         </nav>
       </header>
       <main className="app-main">
-        {view === 'list' ? (
+        {view === 'history' ? (
+          <History />
+        ) : view === 'list' ? (
           <JobList
             onEdit={(id) => {
               setEditingJobId(id);

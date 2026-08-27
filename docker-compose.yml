@@ -5,8 +5,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: scheduler
-    ports:
-      - '5433:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
     healthcheck:
@@ -14,16 +12,18 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - scheduler-net
 
   redis:
     image: redis:7-alpine
-    ports:
-      - '6380:6379'
     healthcheck:
       test: [ 'CMD', 'redis-cli', 'ping' ]
       interval: 5s
       timeout: 5s
       retries: 10
+    networks:
+      - scheduler-net
 
   app:
     build: .
@@ -32,20 +32,26 @@ services:
       REDIS_HOST: redis
       REDIS_PORT: 6379
       PORT: 3000
-    ports:
-      - '3000:3000'
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - scheduler-net
 
   web:
     build: ./web
     ports:
-      - '8080:80'
+      - '8090:80'
     depends_on:
       - app
+    networks:
+      - scheduler-net
+
+networks:
+  scheduler-net:
+    driver: bridge
 
 volumes:
   pgdata:

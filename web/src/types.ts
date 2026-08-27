@@ -6,7 +6,7 @@ export interface Job {
   cron: string;
   timezone: string;
   enabled: boolean;
-  params?: string | null;
+  params?: Record<string, unknown> | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -16,8 +16,8 @@ export interface StepRun {
   stepId: string;
   type: string;
   status: string;
-  input?: string | null;
-  output?: string | null;
+  input?: Record<string, unknown> | null;
+  output?: Record<string, unknown> | null;
   error?: string | null;
   startedAt?: string | null;
   finishedAt?: string | null;
@@ -33,6 +33,7 @@ export interface JobRun {
   error?: string | null;
   createdAt: string;
   stepRuns?: StepRun[];
+  job?: Pick<Job, 'id' | 'key' | 'name'>;
 }
 
 export interface CreateJobInput {
@@ -42,7 +43,7 @@ export interface CreateJobInput {
   cron: string;
   timezone?: string | null;
   enabled?: boolean | null;
-  params?: string | null;
+  params?: Record<string, unknown> | null;
 }
 
 export interface UpdateJobInput extends Partial<CreateJobInput> {

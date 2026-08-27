@@ -116,7 +116,9 @@ export default function JobRuns({ jobId, onClose }: Props) {
                           </div>
                         ) : step.output ? (
                           <pre className="mono" style={{ whiteSpace: 'pre-wrap' }}>
-                            {step.output}
+                            {typeof step.output === 'string'
+                              ? step.output
+                              : JSON.stringify(step.output, null, 2)}
                           </pre>
                         ) : (
                           '—'

@@ -1,5 +1,6 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
 import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import GraphQLJSON from 'graphql-type-json';
 
 @InputType()
 export class UpdateJobInput {
@@ -36,8 +37,7 @@ export class UpdateJobInput {
   @IsBoolean()
   enabled?: boolean;
 
-  @Field({ nullable: true })
+  @Field(() => GraphQLJSON, { nullable: true })
   @IsOptional()
-  @IsString()
-  params?: string;
+  params?: Record<string, unknown>;
 }

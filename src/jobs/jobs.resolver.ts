@@ -16,7 +16,7 @@ import { UpdateJobInput } from './dto/update-job.input';
 
 @Resolver(() => Job)
 export class JobsResolver {
-  constructor(private jobsService: JobsService) {}
+  constructor(private jobsService: JobsService) { }
 
   @Query(() => [Job])
   async jobs() {
@@ -26,6 +26,11 @@ export class JobsResolver {
   @Query(() => Job)
   async job(@Args('id', { type: () => Int }) id: number) {
     return this.jobsService.findOne(id);
+  }
+
+  @Query(() => [JobRun])
+  async allRuns() {
+    return this.jobsService.allRuns();
   }
 
   @Mutation(() => Job)
@@ -56,7 +61,12 @@ export class JobsResolver {
 
 @Resolver(() => JobRun)
 export class JobRunResolver {
-  constructor(private jobsService: JobsService) {}
+  constructor(private jobsService: JobsService) { }
+
+  @ResolveField(() => Job)
+  async job(@Parent() run: JobRun) {
+    return this.jobsService.findOne(run.jobId);
+  }
 
   @ResolveField(() => [StepRun])
   async stepRuns(@Parent() run: JobRun) {

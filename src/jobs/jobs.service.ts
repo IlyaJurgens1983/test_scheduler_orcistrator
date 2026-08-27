@@ -6,13 +6,9 @@ import { UpdateJobInput } from './dto/update-job.input';
 import { SchedulerService } from '../scheduler/scheduler.service';
 import { QueueService } from '../queue/queue.service';
 
-function parseParams(raw?: string): InputJsonValue | undefined {
-  if (!raw) return undefined;
-  try {
-    return JSON.parse(raw) as InputJsonValue;
-  } catch {
-    throw new Error(`Invalid JSON in params: ${raw}`);
-  }
+/** Привести произвольный JSON-объект из GraphQL-входа к типу Prisma. */
+function toInputJson(value?: Record<string, unknown>): InputJsonValue | undefined {
+  return value as InputJsonValue;
 }
 
 @Injectable()
@@ -44,7 +40,7 @@ export class JobsService {
         cron: input.cron,
         timezone: input.timezone ?? 'UTC',
         enabled: input.enabled ?? true,
-        params: parseParams(input.params),
+        params: toInputJson(input.params),
       },
     });
     await this.schedulerService.rescheduleJob(job);
@@ -67,8 +63,7 @@ export class JobsService {
         cron: input.cron,
         timezone: input.timezone,
         enabled: input.enabled,
-        params:
-          input.params !== undefined ? parseParams(input.params) : undefined,
+        params: toInputJson(input.params),
       },
     });
     await this.schedulerService.rescheduleJob(job);
@@ -99,6 +94,13 @@ export class JobsService {
       where: { jobId },
       orderBy: { createdAt: 'desc' },
       take: 50,
+    });
+  }
+
+  async allRuns() {
+    return this.prisma.jobRun.findMany({
+      orderBy: { createdAt: 'desc' },
+      take: 100,
     });
   }
 

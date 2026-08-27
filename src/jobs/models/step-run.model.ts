@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from '@nestjs/graphql';
+import GraphQLJSON from 'graphql-type-json';
 
 @ObjectType()
 export class StepRun {
@@ -17,11 +18,11 @@ export class StepRun {
   @Field()
   status!: string;
 
-  @Field({ nullable: true })
-  input?: string;
+  @Field(() => GraphQLJSON, { nullable: true })
+  input?: Record<string, unknown>;
 
-  @Field({ nullable: true })
-  output?: string;
+  @Field(() => GraphQLJSON, { nullable: true })
+  output?: Record<string, unknown>;
 
   @Field({ nullable: true })
   error?: string;
